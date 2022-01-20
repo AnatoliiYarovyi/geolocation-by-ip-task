@@ -1,4 +1,4 @@
-### geolocation-by-ip-task
+### Geolocation by IP
 
 В нашем распоряжении CSV-таблица (**[тыць](https://www.dropbox.com/s/wo0dexr0p3q4fgb/IP2LOCATION-LITE-DB1.CSV?dl=0)**), в которой длинный перечень строк с диапазонами IP-адресов (от и до  — 1-й и 2-й столбец соответственно), а также страной, которой выданы эти IP.
 
