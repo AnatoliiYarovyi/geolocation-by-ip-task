@@ -7,10 +7,9 @@ const { PORT = 3000 } = process.env;
 
 index.use(express.json());
 
+// -- Для самопроверки в body {"ip": "188.163.53.81"} -----
 index.post("/", async function (req, res) {
   try {
-    // const currentIP =
-    //   req.header("x-forwarded-for") || req.connection.remoteAddress;
     const currentIP = req.body.ip;
     const { countryIP, countryIP2SistemStart, countryIP2SistemEnd } =
       await getAll(currentIP);
@@ -26,7 +25,25 @@ index.post("/", async function (req, res) {
     console.log(error);
   }
 });
-
+// -- Определяет IP автоматически ---
+index.get("/", async function (req, res) {
+  try {
+    const currentIP =
+      req.header("x-forwarded-for") || req.connection.remoteAddress;
+    const { countryIP, countryIP2SistemStart, countryIP2SistemEnd } =
+      await getAll(currentIP);
+    res.json({
+      data: {
+        startIP: countryIP2SistemStart,
+        endIP: countryIP2SistemEnd,
+        shortNameCountry: countryIP.shortNameCountry,
+        fullNameCountry: countryIP.fullNameCountry,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 // --------work with files ------------
 const filesPath = path.join(__dirname, "db-ip");
 
