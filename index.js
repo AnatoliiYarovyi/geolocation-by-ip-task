@@ -14,7 +14,6 @@ index.post("/", async function (req, res) {
     const currentIP = req.body.ip;
     const { countryIP, countryIP2SistemStart, countryIP2SistemEnd } =
       await getAll(currentIP);
-
     res.json({
       data: {
         startIP: countryIP2SistemStart,
@@ -31,7 +30,7 @@ index.post("/", async function (req, res) {
 // --------work with files ------------
 const filesPath = path.join(__dirname, "db-ip");
 
-// ==================================================================================================
+// -------------------------------------------------
 const getAll = async (currentIP) => {
   try {
     const data = await fs
@@ -94,17 +93,25 @@ async function getCurrentIP10(currentIP) {
   const arrCurrentIP = currentIP.split(".");
   return arrCurrentIP.reduce((acc, el, i) => {
     const numEl = Number(el);
-    if (i === 0) {
-      acc += numEl * Math.pow(256, 3);
-    }
-    if (i === 1) {
-      acc += numEl * Math.pow(256, 2);
-    }
-    if (i === 2) {
-      acc += numEl * 256;
-    }
-    if (i === 3) {
-      acc += numEl;
+    switch (i) {
+      case 0:
+        acc += numEl * Math.pow(256, 3);
+        break;
+
+      case 1:
+        acc += numEl * Math.pow(256, 2);
+        break;
+
+      case 2:
+        acc += numEl * 256;
+        break;
+
+      case 3:
+        acc += numEl;
+        break;
+
+      default:
+        console.log("Invalid type");
     }
     return acc;
   }, 0);
@@ -122,23 +129,33 @@ async function getCountry(arrIP, currentIP10) {
 async function getCountryIP2Sistem(IP10) {
   let IP = [];
   for (let i = 0; i < 4; i++) {
-    if (i === 0) {
-      IP[0] = Math.floor(IP10 / Math.pow(256, 3));
-    }
-    if (i === 1) {
-      IP[1] = Math.floor((IP10 - IP[0] * Math.pow(256, 3)) / Math.pow(256, 2));
-    }
-    if (i === 2) {
-      IP[2] = Math.floor(
-        (IP10 - IP[0] * Math.pow(256, 3) - IP[1] * Math.pow(256, 2)) / 256
-      );
-    }
-    if (i === 3) {
-      IP[3] =
-        IP10 -
-        IP[0] * Math.pow(256, 3) -
-        IP[1] * Math.pow(256, 2) -
-        IP[2] * 256;
+    switch (i) {
+      case 0:
+        IP[i] = IP[0] = Math.floor(IP10 / Math.pow(256, 3));
+        break;
+
+      case 1:
+        IP[i] = Math.floor(
+          (IP10 - IP[0] * Math.pow(256, 3)) / Math.pow(256, 2)
+        );
+        break;
+
+      case 2:
+        IP[i] = Math.floor(
+          (IP10 - IP[0] * Math.pow(256, 3) - IP[1] * Math.pow(256, 2)) / 256
+        );
+        break;
+
+      case 3:
+        IP[i] =
+          IP10 -
+          IP[0] * Math.pow(256, 3) -
+          IP[1] * Math.pow(256, 2) -
+          IP[2] * 256;
+        break;
+
+      default:
+        console.log("Invalid type IP");
     }
   }
   return `${IP[0]}.${IP[1]}.${IP[2]}.${IP[3]}`;
